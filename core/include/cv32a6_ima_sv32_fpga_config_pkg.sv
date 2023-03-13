@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.0
 // You may obtain a copy of the License at https://solderpad.org/licenses/
 //
-// Original Author: Jean-Roch COULON - Thales
+// Original Author: Jean-Roch COULON (jean-roch.coulon@thalesgroup.com)
 
 
 package cva6_config_pkg;
@@ -29,12 +29,8 @@ package cva6_config_pkg;
 
     localparam CVA6ConfigRenameEn = 0;
 
-    localparam CVA6ConfigIcacheByteSize = 8192;
     localparam CVA6ConfigIcacheSetAssoc = 2;
-    localparam CVA6ConfigIcacheLineWidth = 128;
-    localparam CVA6ConfigDcacheByteSize = 8192;
     localparam CVA6ConfigDcacheSetAssoc = 2;
-    localparam CVA6ConfigDcacheLineWidth = 128;
 
     localparam CVA6ConfigNrCommitPorts = 1;
     localparam CVA6ConfigNrScoreboardEntries = 4;
@@ -43,16 +39,5 @@ package cva6_config_pkg;
 
     localparam CVA6ConfigNrLoadPipeRegs = 1;
     localparam CVA6ConfigNrStorePipeRegs = 0;
-
-    localparam CVA6ConfigInstrTlbEntries = 2;
-    localparam CVA6ConfigDataTlbEntries = 2;
-
-    localparam CVA6ConfigRASDepth = 2;
-    localparam CVA6ConfigBTBEntries = 32;
-    localparam CVA6ConfigBHTEntries = 128;
-
-    localparam CVA6ConfigNrPMPEntries = 0;
-
-    localparam CVA6ConfigPerfCounterEn = 0;
 
 endpackage

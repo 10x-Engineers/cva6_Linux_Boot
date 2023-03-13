@@ -1,31 +1,27 @@
 #!/usr/bin/env python3
-""" Convert binary output of 'objcopy -O binary elfFile' into a system verilog module and
-a header file for simulation
-"""
 
 from string import Template
 import argparse
 import os.path
 import sys
+import binascii
 
 
-def parse():
-    parser = argparse.ArgumentParser(description='Convert binary file to verilog rom')
-    parser.add_argument('filename', metavar='filename', nargs=1,
-            help='filename of input binary')
+parser = argparse.ArgumentParser(description='Convert binary file to verilog rom')
+parser.add_argument('filename', metavar='filename', nargs=1,
+                   help='filename of input binary')
 
-    args = parser.parse_args()
-    file = args.filename[0]
-    filename = os.path.splitext(file)[0]
+args = parser.parse_args()
+file = args.filename[0];
 
-    # check that file exists
-    if not os.path.isfile(file):
-        print("File {} does not exist.".format(filename))
-        sys.exit(1)
+# check that file exists
+if not os.path.isfile(file):
+    print("File {} does not exist.".format(filename))
+    sys.exit(1)
 
-    return filename
+filename = os.path.splitext(file)[0]
 
-LICENSE_TEMPLATE = """\
+license = """\
 /* Copyright 2018 ETH Zurich and University of Bologna.
  * Copyright and related rights are licensed under the Solderpad Hardware
  * License, Version 0.51 (the "License"); you may not use this file except in
@@ -44,7 +40,7 @@ LICENSE_TEMPLATE = """\
 // Auto-generated code
 """
 
-MODULE_TEMPLATE = """\
+module = """\
 module $filename (
    input  logic         clk_i,
    input  logic         req_i,
@@ -81,55 +77,51 @@ $content
 };
 """
 
-def read_bin(filename):
+def read_bin():
+
     with open(filename + ".img", 'rb') as f:
-        rom = f.read()
+        rom = binascii.hexlify(f.read())
+        rom = map(''.join, zip(rom[::2], rom[1::2]))
+
 
     # align to 64 bit
-    align = (int((len(rom) + 7) / 8 )) * 8
+    align = (int((len(rom) + 7) / 8 )) * 8;
 
     for i in range(len(rom), align):
-        rom += b"\x00"
+        rom.append("00")
 
     return rom
 
-def generate_h(filename, rom):
-    """ Generate C header file for simulator """
-    with open(filename + ".h", "w") as f:
-        rom_str = ""
-        # process in junks of 32 bit (4 byte)
-        for i in range(0, int(len(rom)/4)):
-            rom_str += "    0x" + bytes(reversed(rom[i*4:i*4+4])).hex() + ",\n"
+rom = read_bin()
 
-        # remove the trailing comma
-        rom_str = rom_str[:-2]
+""" Generate C header file for simulator
+"""
+with open(filename + ".h", "w") as f:
+    rom_str = ""
+    # process in junks of 32 bit (4 byte)
+    for i in range(0, int(len(rom)/4)):
+        rom_str += "    0x" + "".join(rom[i*4:i*4+4][::-1]) + ",\n"
 
-        s = Template(c_var)
-        f.write(s.substitute(filename=filename, size=int(len(rom)/4), content=rom_str))
+    # remove the trailing comma
+    rom_str = rom_str[:-2]
 
-        f.close()
+    s = Template(c_var)
+    f.write(s.substitute(filename=filename, size=int(len(rom)/4), content=rom_str))
 
-def generate_sv(filename, rom):
-    """ Generate SystemVerilog bootcode for FPGA and ASIC """
-    with open(filename + ".sv", "w") as f:
-        rom_str = ""
-        rom = bytes(reversed(rom))
-        # process in junks of 64 bit (8 byte)
-        for i in range(int(len(rom)/8)):
-            rom_str += "        64'h" + rom[i*8:i*8+4].hex() + "_" + rom[i*8+4:i*8+8].hex() + ",\n"
+    f.close()
 
-        # remove the trailing comma
-        rom_str = rom_str[:-2]
+""" Generate SystemVerilog bootcode for FPGA and ASIC
+"""
+with open(filename + ".sv", "w") as f:
+    rom_str = ""
+    # process in junks of 64 bit (8 byte)
+    for i in reversed(range(int(len(rom)/8))):
+        rom_str += "        64'h" + "".join(rom[i*8+4:i*8+8][::-1]) + "_" + "".join(rom[i*8:i*8+4][::-1]) + ",\n"
 
-        f.write(LICENSE_TEMPLATE)
-        s = Template(MODULE_TEMPLATE)
-        f.write(s.substitute(filename=filename, size=int(len(rom)/8), content=rom_str))
+    # remove the trailing comma
+    rom_str = rom_str[:-2]
 
-def main():
-    filename = parse()
-    rom = read_bin(filename)
-    generate_sv(filename, rom)
-    generate_h(filename, rom)
+    f.write(license)
+    s = Template(module)
+    f.write(s.substitute(filename=filename, size=int(len(rom)/8), content=rom_str))
 
-if __name__ == "__main__":
-    main()

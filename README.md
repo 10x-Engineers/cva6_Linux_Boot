@@ -94,7 +94,7 @@ The following instructions will allow you to compile and run a Verilator model o
 
 Checkout the repository and initialize all submodules
 ```
-git clone https://github.com/openhwgroup/cva6.git
+git clone https://github.com/UmerShahidengr/cva6.git
 git submodule update --init --recursive
 ```
 

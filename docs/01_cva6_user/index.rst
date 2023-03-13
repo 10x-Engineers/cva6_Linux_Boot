@@ -1,8 +1,7 @@
 ..
-   Copyright (c) 2023 OpenHW Group
-   Copyright (c) 2023 Thales DIS design services SAS
+   Copyright (c) 2022 OpenHW Group
 
-   Licensed under the Solderpad Hardware Licence, Version 2.1 (the "License");
+   Licensed under the Solderpad Hardware Licence, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
@@ -14,31 +13,36 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-   SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
+   SPDX-License-Identifier: Apache-2.0 WITH SHL-2.0
 
-CVA6 User Manual
-================
-Editor: **Jerome Quevremont**
+OpenHW Group CVA6 User Manual
+================================
+Editor: **Florian Zaruba**
+`florian@openhwgroup.org <mailto:florian@openhwgroup.org?subject=CVA6%20User%20Manual>`__
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   CVA6_user_guide
-   Introduction
-   Programmer_View
-   Custom_Instructions
-   PMA
-   PMP
-   Traps_Interrupts_Exceptions
-   Compiler_Command_Lines
-   RISCV_Instructions
-   CV32A6_Control_Status_Registers
-   CV64A6_Control_Status_Registers
-   CSR_Cache_Control
-   CSR_Performance_Counters
-   Parameters_Configuration
-   Interfaces
-   Core_Integration
-   CVX_Interface_Coprocessor
-   AXI_Interface
+   intro
+   pcgen_stage
+   if_stage
+   id_stage
+   issue_stage
+   ex_stage
+   commit_stage
+   cva6_soc
+   cva6_testharness
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+Documentation
+-------------
+
+The documentation is re-generated on pushes to master.
+When contributing to the project please consider the [contribution guide](https://github.com/openhwgroup/cva6/blob/master/CONTRIBUTING.md).

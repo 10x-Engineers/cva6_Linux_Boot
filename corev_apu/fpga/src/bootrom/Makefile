@@ -1,6 +1,7 @@
 XLEN ?= 64
 CROSSCOMPILE ?= riscv64-unknown-elf-
 CC = ${CROSSCOMPILE}gcc
+PYTHON=python
 
 ifeq ($(XLEN), 64)
 CFLAGS = -Os -ggdb -march=rv64imac -mabi=lp64 -Wall -mcmodel=medany -mexplicit-relocs
@@ -49,7 +50,7 @@ $(MAIN): $(DTB) $(OBJS_C) $(OBJS_S) linker.lds
 	dtc -I dts $< -O dtb -o $@
 
 %.sv: %.img
-	./gen_rom.py $<
+	$(PYTHON) ./gen_rom.py $<
 	@echo "PYTHON >= $(MAIN_SV)"
 
 clean:
